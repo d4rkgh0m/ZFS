@@ -294,3 +294,49 @@ otus  special_small_blocks  0                      default
 NAME  PROPERTY   VALUE  SOURCE
 otus  available  350M   -
 ```
+### Тип:
+> zfs get readonly otus
+### Вывод команды:
+```ruby
+NAME  PROPERTY  VALUE   SOURCE
+otus  readonly  off     default
+```
+### Значение recordsize:
+> zfs get recordsize otus
+### Вывод команды:
+```ruby
+NAME  PROPERTY    VALUE    SOURCE
+otus  recordsize  128K     local
+```
+### Тип сжатия (или параметр отключения):
+> zfs get compression otus
+### Вывод команды:
+```ruby
+NAME  PROPERTY     VALUE     SOURCE
+otus  compression  zle       local
+```
+### Тип контрольной суммы:
+> zfs get checksum otus
+### Вывод команды:
+```ruby
+NAME  PROPERTY  VALUE      SOURCE
+otus  checksum  sha256     local
+```
+## 3. Работа со снапшотом, поиск сообщения от преподавателя
+### Скачаем файл, указанный в задании:
+> wget -O otus_task2.file --no-check-certificate https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI&export=download
+### Восстановим файловую систему из снапшота:
+> zfs receive otus/test@today < otus_task2.file
+### Далее, ищем в каталоге /otus/test файл с именем “secret_message”:
+> find /otus/test -name "secret_message"
+### Вывод команды:
+```ruby
+ /otus/test/task1/file_mess/secret_message
+```
+### Смотрим содержимое найденного файла:
+> cat /otus/test/task1/file_mess/secret_message
+### Вывод команды:
+```ruby
+https://otus.ru/lessons/linux-hl/
+```
+### Видим ссылку на курс OTUS, задание выполнено.
