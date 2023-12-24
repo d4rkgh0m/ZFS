@@ -68,6 +68,13 @@ otus4   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
 > zfs set compression=zle otus4
 ### Проверим, что все файловые системы имеют разные методы сжатия:
 > zfs get all | grep compression
+### Вывод команды:
+```ruby
+otus1  compression           lzjb                   local
+otus2  compression           lz4                    local
+otus3  compression           gzip-9                 local
+otus4  compression           zle                    local
+```
 ### Скачаем один и тот же текстовый файл во все пулы:
 > for i in {1..4}; do wget -P /otus$i https://gutenberg.org/cache/epub/2600/pg2600.converter.log; done
 ### Проверим, что файл был скачан во все пулы:
