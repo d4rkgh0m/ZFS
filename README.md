@@ -28,17 +28,19 @@
 ### Смотрим список всех дисков, которые есть в виртуальной машине: 
 > lsblk
 ### Вывод команды:
-NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT \
-sda      8:0    0   40G  0 disk  \
-└─sda1   8:1    0   40G  0 part / \
-sdb      8:16   0  512M  0 disk   \
-sdc      8:32   0  512M  0 disk   \
-sdd      8:48   0  512M  0 disk   \
-sde      8:64   0  512M  0 disk   \
-sdf      8:80   0  512M  0 disk   \
-sdg      8:96   0  512M  0 disk   \
-sdh      8:112  0  512M  0 disk   \
-sdi      8:128  0  512M  0 disk   
+```ruby
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT 
+sda      8:0    0   40G  0 disk  
+└─sda1   8:1    0   40G  0 part / 
+sdb      8:16   0  512M  0 disk   
+sdc      8:32   0  512M  0 disk   
+sdd      8:48   0  512M  0 disk   
+sde      8:64   0  512M  0 disk   
+sdf      8:80   0  512M  0 disk   
+sdg      8:96   0  512M  0 disk   
+sdh      8:112  0  512M  0 disk   
+sdi      8:128  0  512M  0 disk
+```  
 ### Создаём пул из двух дисков в режиме RAID 1:
 > zpool create otus1 mirror /dev/sdb /dev/sdc
 ### Создадим ещё 3 пула:
@@ -48,11 +50,13 @@ sdi      8:128  0  512M  0 disk
 ### Смотрим информацию о пулах:
 > zpool list
 ### Вывод команды:
-NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT \
-otus1   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - \
-otus2   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - \
-otus3   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - \
-otus4   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - 
+```ruby
+NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT 
+otus1   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - 
+otus2   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - 
+otus3   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  - 
+otus4   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
+```
 ### Добавим разные алгоритмы сжатия в каждую файловую систему:
 ### Алгоритм lzjb:
 > zfs set compression=lzjb otus1
@@ -69,32 +73,38 @@ otus4   480M  91.5K   480M        -         -     0%     0%  1.00x    ONLINE  -
 ### Проверим, что файл был скачан во все пулы:
 > ls -l /otus*
 ### Вывод команды:
+```ruby
 /otus1:
 total 22063
--rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log \
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log 
 /otus2:
 total 17992
--rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log \
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log 
 /otus3:
 total 10959
--rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log \
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log 
 /otus4:
 total 40066
--rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log 
+-rw-r--r--. 1 root root 40997929 Dec  2 09:17 pg2600.converter.log
+```
 ### Проверим, сколько места занимает один и тот же файл в разных пулах и проверим степень сжатия файлов:
 > zfs list
 ### Вывод команды:
-NAME    USED  AVAIL     REFER  MOUNTPOINT \
-otus1  21.6M   330M     21.6M  /otus1 \
-otus2  17.7M   334M     17.6M  /otus2 \
-otus3  10.8M   341M     10.7M  /otus3 \
-otus4  39.2M   313M     39.2M  /otus4 
+```ruby
+NAME    USED  AVAIL     REFER  MOUNTPOINT 
+otus1  21.6M   330M     21.6M  /otus1 
+otus2  17.7M   334M     17.6M  /otus2 
+otus3  10.8M   341M     10.7M  /otus3 
+otus4  39.2M   313M     39.2M  /otus4
+```
 > zfs get all | grep compressratio | grep -v ref
 ### Вывод команды:
-otus1  compressratio   1.81x   - \
-otus2  compressratio   2.22x   - \
-otus3  compressratio   3.65x   - \
-otus4  compressratio   1.00x   - 
+```ruby
+otus1  compressratio   1.81x   - 
+otus2  compressratio   2.22x   - 
+otus3  compressratio   3.65x   - 
+otus4  compressratio   1.00x   -
+```
 ### Итак алгоритм gzip-9 самый эффективный по сжатию.
 ## 2. Определение настроек пула
 ### Скачиваем архив в домашний каталог:
@@ -123,6 +133,7 @@ pool: otus
 ```
 ### Сделаем импорт данного пула к нам в ОС:
 > zpool import -d zpoolexport/ otus
+### И проверим:
 > zpool status
 ### Вывод команды:
 ```ruby
@@ -136,6 +147,8 @@ config:
 	  mirror-0                   ONLINE       0     0     0
 	    /root/zpoolexport/filea  ONLINE       0     0     0
 	    /root/zpoolexport/fileb  ONLINE       0     0     0
+
+errors: No known data errors  ....
 ```
 > zpool get all otus
 ### Вывод команды:
